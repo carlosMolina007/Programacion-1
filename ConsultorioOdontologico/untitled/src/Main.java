@@ -78,18 +78,22 @@ public class Main {
 
                 case "Eliminar un especialista del consultorio":
                     String idEliminar = JOptionPane.showInputDialog(null, "Ingrese la cédula del especialista que desea eliminar");
+                    boolean banderaMensaje = false;
                     for (Medico eliminarMedico : consultorio.getListMedicos()) {
                         if (eliminarMedico != null && eliminarMedico.getId().equals(idEliminar)) {
                             consultorio.eliminarMedico(eliminarMedico);
                             JOptionPane.showMessageDialog(null, "Se ha eliminado correctamente");
-
+                            banderaMensaje = true;
+                            break;
                         }
-                        break;
-                    }JOptionPane.showMessageDialog(null, "No se encontró el especialista");
+                    }if (!banderaMensaje){
+                        JOptionPane.showMessageDialog(null, "No se encontró el especialista");
+                    }
                     break;
 
                 case "Actualizar datos de un especialista":
                     String idActualizar = JOptionPane.showInputDialog(null, "Ingrese la cédula del especialista que desea actualizar");
+                    Medico medicoActualizado = null;
                     for (Medico actualizarMedico : consultorio.getListMedicos()) {
                         if (actualizarMedico != null && actualizarMedico.getId().equals(idActualizar)){
                             Especializacion[] nuevaEspecializacion = Especializacion.values();
@@ -107,22 +111,22 @@ public class Main {
                                     optionNuevaEspecialidad,
                                     optionNuevaEspecialidad[0]);
 
-                            Medico medicoActualizado = new Medico(idActualizar, nuevoNombre, actualizarMedico.getIdLicencia(), actualizarEspecializacion);
+                            medicoActualizado = new Medico(idActualizar, nuevoNombre, actualizarMedico.getIdLicencia(), actualizarEspecializacion);
                             medicoActualizado.setNombre(nuevoNombre);
                             medicoActualizado.setEspecialidad(actualizarEspecializacion);
                             consultorio.modificarMedico(medicoActualizado);
                             JOptionPane.showMessageDialog(null, "Se ha actualizado correctamente");
                             break;
-                        }else{
-                            JOptionPane.showMessageDialog(null, "No se encontró el especialista");
-                            break;
                         }
-                    }
+                    }if(medicoActualizado == null){
+                        JOptionPane.showMessageDialog(null, "No existe el especialista");
+                }
                     break;
                 case "Actualizar o agregar un paciente al consultorio":
+                    boolean verificar = true;
                     String idHistoriaClinica = JOptionPane.showInputDialog(null, "Ingrese el número de la historia clínica");
                     for (Paciente agregarPaciente : consultorio.getListPacientes()) {
-                        if(agregarPaciente != null && agregarPaciente.idHistoriaClinica().equals(idHistoriaClinica)){
+                        if(agregarPaciente != null && idHistoriaClinica.equals(agregarPaciente.idHistoriaClinica())){
                             JOptionPane.showMessageDialog(null,  "Estos son los datos de "+agregarPaciente.nombre()+" a continuación, se actualizará su historia clínica");
                             int nuevaEdad = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese su edad actual"));
                             String nuevoTelefono = JOptionPane.showInputDialog(null, "Ingrese su número de telefono");
@@ -133,55 +137,70 @@ public class Main {
                             Paciente actualizarPaciente = new Paciente(idHistoriaClinica, agregarPaciente.nombre(), nuevaEdad, nuevoTelefono, nuevaDireccion, nuevaFecha, nuevoTratamiento);
                             consultorio.actualizarPaciente(actualizarPaciente);
                             JOptionPane.showMessageDialog(null, "Se ha actualizado correctamente");
+                            verificar = false;
                             break;
-                        }else {
-                            JOptionPane.showMessageDialog(null, "Se agregará un nuevo paciente");
-                            String nombrePaciente = JOptionPane.showInputDialog(null,"Ingrese el nombre completo del paciente");
-                            int edadPaciente = Integer.parseInt(JOptionPane.showInputDialog(null,"Ingrese el edad del paciente"));
-                            String telefono = JOptionPane.showInputDialog(null,"Ingrese número telefónico del paciente");
-                            String direccion = JOptionPane.showInputDialog(null, "Ingrese la dirección del paciente");
-                            String fechaRegistro = JOptionPane.showInputDialog(null, "Ingrese la fecha en la cuál es atendido por primera vez");
-                            int CantTratamientos = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese la cantidad de tratamientos que se realizarán"));
-
-                            Paciente nuevoPaciente = new Paciente(idHistoriaClinica, nombrePaciente, edadPaciente, telefono, direccion, fechaRegistro, CantTratamientos);
-                            consultorio.actualizarPaciente(nuevoPaciente);
-                            JOptionPane.showMessageDialog(null, "Se agregó correctamente");
-                            break;
-
                         }
-                    }
+
+
+                    }if(verificar){
+                    JOptionPane.showMessageDialog(null, "Se agregará un nuevo paciente");
+                    String nombrePaciente = JOptionPane.showInputDialog(null,"Ingrese el nombre completo del paciente");
+                    int edadPaciente = Integer.parseInt(JOptionPane.showInputDialog(null,"Ingrese el edad del paciente"));
+                    String telefono = JOptionPane.showInputDialog(null,"Ingrese número telefónico del paciente");
+                    String direccion = JOptionPane.showInputDialog(null, "Ingrese la dirección del paciente");
+                    String fechaRegistro = JOptionPane.showInputDialog(null, "Ingrese la fecha en la cuál es atendido por primera vez");
+                    int CantTratamientos = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese la cantidad de tratamientos que se realizarán"));
+
+                    Paciente nuevoPaciente = new Paciente(idHistoriaClinica, nombrePaciente, edadPaciente, telefono, direccion, fechaRegistro, CantTratamientos);
+                    consultorio.actualizarPaciente(nuevoPaciente);
+                    JOptionPane.showMessageDialog(null, "Se agregó correctamente");
+                }
                     break;
+
                 case "Eliminar un paciente del consultorio":
                     String idBorrar = JOptionPane.showInputDialog(null, "Ingrese el numero de historia clínica del paciente que desea eliminar");
+                    boolean verificarBorrar = false;
                     for (Paciente eliminarPaciente : consultorio.getListPacientes()) {
                         if(eliminarPaciente != null && eliminarPaciente.idHistoriaClinica().equals(idBorrar)){
                             consultorio.eliminarPaciente(eliminarPaciente);
                             JOptionPane.showMessageDialog(null, "Se ha eliminado correctamente");
-
+                            verificarBorrar = true;
+                            break;
                         }
-                        break;
-                    }JOptionPane.showMessageDialog(null, "Paciente inexistente");
+                    }if(!verificarBorrar){
+                        JOptionPane.showMessageDialog(null, "Paciente inexistente");
+                }
                     break;
 
                 case "Mostrar los pacientes registrados":
                     Paciente[] pacienteRegistrado = consultorio.getListPacientes();
-                    StringBuilder mensajePaciente = new StringBuilder("Los pacientes registrados son: \n\n");
+                    StringBuilder mensajePaciente = new StringBuilder("Los historias clínicas de los pacientes registrados son: \n\n");
                     boolean existePaciente = false;
                     for (Paciente paciente1 : pacienteRegistrado) {
                         if(paciente1 != null){
-                            mensajePaciente.append(paciente1).append("\n");
+                            mensajePaciente.append(paciente1).append("\n\n");
                             existePaciente = true;
                         }
                     }
                     if(!existePaciente){
-                        JOptionPane.showMessageDialog(null, "Lista vacía, registre al menos un paciente");
+                        JOptionPane.showMessageDialog(null, "Lista vacía, no existe ninguna historia clínica registrada a la fecha");
                     }else{
                         JOptionPane.showMessageDialog(null, mensajePaciente.toString());
                     }
                     break;
 
                 default:
-                    JOptionPane.showMessageDialog(null, consultorio.pacientesmas5Tratamientos());
+                    Paciente[] mas5Tratamientos = consultorio.pacientesmas5Tratamientos();
+                    if(consultorio.pacientesmas5Tratamientos().length >= 1){
+                        StringBuilder mensajeTratamientos = new StringBuilder("Los historias clínicas de los pacientes registrados son: \n\n");
+                        for (Paciente pacienteTratamiento : mas5Tratamientos) {
+                        mensajeTratamientos.append(pacienteTratamiento).append("\n\n");
+                        }
+                        JOptionPane.showMessageDialog(null, mensajeTratamientos.toString());
+                        break;
+                    }else {
+                        JOptionPane.showMessageDialog(null, "No existen pacientes con más de 5 tratamientos");
+                    }
                     break;
             }
         }
