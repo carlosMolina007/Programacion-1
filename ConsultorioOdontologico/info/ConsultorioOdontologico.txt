@@ -1,0 +1,21 @@
+1.) Abstracción:
+
+1.1¿Qué se solicita finalmente? (Problema)
+R= Digitalizar el seguimiento de sus pacientes para mejorar la eficiencia en la atención
+
+1.2¿Información relevante?
+R= ID, nombreCompleto, número licencia profesional, Especialidad(Odontología General, Ortodoncia, Endodoncia, Cirugía Oral), número de historia Clínica (único), nombre, edad, teléfono, dirección, fecha de última consulta, cantidad de tratamientos realizados.
+ 
+1.3¿Cómo se agrupa la información relevante?
+ConsultorioOdontológico = (ListaPacientes5Tratamientos, CRUD)
+Médico = ID, nombreCompleto, número licencia profesional, Especialidad
+Paciente = número historia Clínica, nombre, edad, teléfono, dirección, fecha Ultima consulta, cantidad de tratamientos realizados.
+
+1.4¿Qué funcionalidades se solicitan?
+CRUD, ListaPacientes5Tratamientos
+ 
+2.) Descomposición:
+
+¿Cómo se distribuyen las funciones relevantes?
+
+(Diagrama)
