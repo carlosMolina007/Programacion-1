@@ -198,6 +198,7 @@ public class Main {
                         }
                         JOptionPane.showMessageDialog(null, mensajeTratamientos.toString());
                         break;
+
                     }else {
                         JOptionPane.showMessageDialog(null, "No existen pacientes con más de 5 tratamientos");
                     }
