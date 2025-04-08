@@ -1,0 +1,28 @@
+1.) Abstracción:
+
+1.1¿Qué se solicita finalmente? (Problema)
+R= Un batallón busca digitalizar la administración del personal y vehículos, para mejorar su eficiencia.
+
+1.2¿Información relevante?
+R= ID, modelo, añoFabricacion, kilometraje, estado operativo, capacidad de soldados, nivel de blindaje. tipoDeFunción, misiones
+ 
+1.3¿Cómo se agrupa la información relevante?
+
+R=
+Vehiculo = (ID, modelo, año fabricación, kilometraje y estado operativo(Disponible, en Misión, en Mantenimiento), cantMisiones)
+VehiculoTransporteTropas = (Capacidad de soldados)
+vehiculoBlindado = (nivel de blindaje)
+vehiculoApoyo = (Tipo de función)
+Misiones = (fecha, ubicación, personal asignado y vehículos utilizados)
+
+1.4¿Qué funcionalidades se solicitan?
+
+ObtenerVehiculos50Misiones
+RegistrarMision
+GestionVehiculosMilitares(CRUD)
+ 
+2.) Descomposición:
+
+¿Cómo se distribuyen las funciones relevantes?
+
+(Diagrama)
