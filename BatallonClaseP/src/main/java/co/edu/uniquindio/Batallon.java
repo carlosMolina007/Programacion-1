@@ -13,6 +13,7 @@ public class Batallon {
     private LinkedList<TransporteTropas> listTransporteTropas;
     private LinkedList<VehiculoApoyo> listVehiculosApoyo;
     private LinkedList<Mision> listMisiones;
+    public LinkedList<Soldado> soldados;
 
     public Batallon(String nombre, String id) {
         this.nombre = nombre;
@@ -47,7 +48,7 @@ public class Batallon {
     }
 
     //Crea un vehiculo base con las características que todos tienen en común (Esto para que sea más ordenado)
-    public Object[] vehiculoBase(){
+    public Object[] vehiculoBase() {
         String modelo = JOptionPane.showInputDialog(null, "Ingrese el modelo del vehiculo");
         int anioFabricacion = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese el año de fabricación del vehiculo"));
         double kilometraje = Double.parseDouble(JOptionPane.showInputDialog(null, " Ingrese el kilometraje del vehiculo"));
@@ -82,7 +83,7 @@ public class Batallon {
         return true;
     }
 
-//CRUD (Create, Read, Update, Delete)
+    //CRUD (Create, Read, Update, Delete)
     //Agrega un vehiculo a su lista independiente
     public boolean agregarVehiculo(Vehiculo vehiculo) {
         boolean flag = false;
@@ -104,7 +105,7 @@ public class Batallon {
                     listVehiculosBlindados.add(newVehiculoBlindado);
                     flag = true;
                     break;
-                }else{
+                } else {
                     break;
                 }
             } else if (options == 2) {
@@ -119,7 +120,7 @@ public class Batallon {
                     listVehiculosApoyo.add(newVehiculoApoyo);
                     flag = true;
                     break;
-                }else{
+                } else {
                     break;
                 }
             } else if (options == 3) {
@@ -134,11 +135,10 @@ public class Batallon {
                     listTransporteTropas.add(newVehiculoTransporte);
                     flag = true;
                     break;
-                }else{
+                } else {
                     break;
                 }
-            }
-            else {
+            } else {
                 JOptionPane.showMessageDialog(null, "Opción inválida, intente nuevamente");
             }
         }
@@ -172,13 +172,13 @@ public class Batallon {
     }
 
     //Elimina un vehiculo de la lista
-    public boolean eliminarVehiculo(){
+    public boolean eliminarVehiculo() {
         LinkedList<Vehiculo> listVehiculos = unificarVehiculos();
         String idVehiculoEliminar = JOptionPane.showInputDialog(null, "Ingrese el id del vehiculo que desea eliminar");
         boolean vehiculoExiste = verificarIDVehiculo(idVehiculoEliminar);
         if (!vehiculoExiste) {
-            for (Vehiculo vehiculoEliminar : listVehiculos){
-                if(vehiculoEliminar.getId().equals(idVehiculoEliminar)){
+            for (Vehiculo vehiculoEliminar : listVehiculos) {
+                if (vehiculoEliminar.getId().equals(idVehiculoEliminar)) {
                     listVehiculos.remove(vehiculoEliminar);
                     return true;
                 }
@@ -188,10 +188,10 @@ public class Batallon {
     }
 
     //Permite editar un vehiculo buscandolo por su ID
-    public boolean editarVehiculo(){
+    public boolean editarVehiculo() {
         String idVehiculoModificar = JOptionPane.showInputDialog(null, "Ingrese el id del vehiculo que desea modificar");
-        for (VehiculoApoyo vehiculoApoyo : listVehiculosApoyo){
-            if(vehiculoApoyo.getId().equals(idVehiculoModificar)){
+        for (VehiculoApoyo vehiculoApoyo : listVehiculosApoyo) {
+            if (vehiculoApoyo.getId().equals(idVehiculoModificar)) {
                 double nuevoKm = Double.parseDouble(JOptionPane.showInputDialog(null, "Ingrese el kilometraje actualizado"));
                 EstadoOperativo NuevoEstadoOperativo = estadoOperativo();
                 TipoFuncion NuevoTipoFuncion = tipoFuncion();
@@ -203,8 +203,8 @@ public class Batallon {
             }
         }
 
-        for (VehiculoBlindado vehiculoBlindado : listVehiculosBlindados){
-            if(vehiculoBlindado.getId().equals(idVehiculoModificar)){
+        for (VehiculoBlindado vehiculoBlindado : listVehiculosBlindados) {
+            if (vehiculoBlindado.getId().equals(idVehiculoModificar)) {
                 double nuevoKm = Double.parseDouble(JOptionPane.showInputDialog(null, "Ingrese el kilometraje actualizado"));
                 EstadoOperativo NuevoEstadoOperativo = estadoOperativo();
                 int nuevoBlindaje = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese el blindaje actualizado"));
@@ -215,8 +215,8 @@ public class Batallon {
                 return true;
             }
         }
-        for (TransporteTropas transporteTropas : listTransporteTropas){
-            if(transporteTropas.getId().equals(idVehiculoModificar)){
+        for (TransporteTropas transporteTropas : listTransporteTropas) {
+            if (transporteTropas.getId().equals(idVehiculoModificar)) {
                 double nuevoKm = Double.parseDouble(JOptionPane.showInputDialog(null, "Ingrese el kilometraje actualizado"));
                 EstadoOperativo NuevoEstadoOperativo = estadoOperativo();
                 int nuevaCapacidadSoldados = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese el capacidad de soldados"));
@@ -262,7 +262,8 @@ public class Batallon {
         Boolean flag = false;
         String cantMisionesActuales = String.valueOf(vehiculos.size() + 1);
         Mision newMision = new Mision(cantMisionesActuales, fechaMision, ubicacionMision);
-        newMision.setPersonal(personal);
+        Soldado soldadoMision = asignarSoldadoMision();
+        newMision.setPersonal(soldadoMision);
         for (Vehiculo vehiculoBlindado : listVehiculosBlindados) {
             if (vehiculoBlindado.getId().equals(idVehiculoMision)) {
                 vehiculoBlindado.setMisionesCompletadas(vehiculoBlindado.getMisionesCompletadas() + 1);
@@ -364,20 +365,20 @@ public class Batallon {
     }
 
     //Retorna una lista de vehiculos fabricados en un año determinado ordenados por tipo y modelo
-    public LinkedList<Vehiculo> obtenerVehiculosFabricadosXAnio(){
+    public LinkedList<Vehiculo> obtenerVehiculosFabricadosXAnio() {
         LinkedList<Vehiculo> vehiculosUnificados = unificarVehiculos();
         LinkedList<Vehiculo> vehiculosFiltrados = new LinkedList<>();
         int fechaFabricacionBuscar = Integer.parseInt(JOptionPane.showInputDialog(null,
                 "Ingrese el año a buscar del vehiculo:"));
         //Filtra los vehiculos que buscan en un año determinado
         for (Vehiculo vehiculo : vehiculosUnificados) {
-            if(vehiculo.getFechaFabricacion() == fechaFabricacionBuscar){
+            if (vehiculo.getFechaFabricacion() == fechaFabricacionBuscar) {
                 vehiculosFiltrados.add(vehiculo);
             }
         }
         //Sortea los vehiculos por su tipo de vehiculo y luego por su modelo
-        vehiculosFiltrados.sort((vehiculo1, vehiculo2)->{
-           int comparacionTipoVehiculo = vehiculo1.getClass().getSimpleName().compareTo(vehiculo2.getClass().getSimpleName());
+        vehiculosFiltrados.sort((vehiculo1, vehiculo2) -> {
+            int comparacionTipoVehiculo = vehiculo1.getClass().getSimpleName().compareTo(vehiculo2.getClass().getSimpleName());
             if (comparacionTipoVehiculo == 0) {
                 return vehiculo1.getModelo().compareToIgnoreCase(vehiculo2.getModelo());
             }
@@ -388,7 +389,7 @@ public class Batallon {
     }
 
     //Ordenar vehiculos por misiones completadas descendentemente
-    public LinkedList<Vehiculo> vehiculosMisionesCompletadasDescendente(){
+    public LinkedList<Vehiculo> vehiculosMisionesCompletadasDescendente() {
         LinkedList<Vehiculo> vehiculosUnificados = unificarVehiculos();
 
         vehiculosUnificados.sort((vehiculo1, vehiculo2) ->
@@ -397,9 +398,140 @@ public class Batallon {
         return vehiculosUnificados;
     }
 
-    //
+    //CRUD SOLDADO
+    //Obtiene el rango del militar del enum
+    public RangoMilitar obtenerRangoMilitar() {
+        RangoMilitar rango = null;
+        while (rango == null) {
+            int option = Integer.parseInt(JOptionPane.showInputDialog(null, "A continuación ingrese el número del rango perteneciente al soldado" +
+                    "\n1.Soldado\n2.Cabo\n3.Sargento"));
+            switch (option) {
+                case 1 -> rango = RangoMilitar.SOLDADO;
+                case 2 -> rango = RangoMilitar.CABO;
+                case 3 -> rango = RangoMilitar.SARGENTO;
+            }
+        }
+        return rango;
+    }
+
+    //Obtiene el area en el que se especializa el soldado desde el enum
+    public AreaEspecializacion obtenerAreaEspecializacion() {
+        AreaEspecializacion especializacion = null;
+        while (especializacion == null) {
+            int option = Integer.parseInt(JOptionPane.showInputDialog(null, "A continuación ingrese el número de la función que cumple el soldado:" +
+                    "\n1.Médica\n2.Logística\n3.Comunicaciones"));
+            switch (option) {
+                case 1 -> especializacion = AreaEspecializacion.MEDICO;
+                case 2 -> especializacion = AreaEspecializacion.LOGISITCA;
+                case 3 -> especializacion = AreaEspecializacion.COMUNICACIONES;
+        }
+    }
+    return especializacion;}
+
+    public void agregarSoldado(){
+        boolean flag = false;
+        String id = JOptionPane.showInputDialog(null, "Ingrese el ID del soldado a agregar");
+        for (Soldado verificarSoldado : soldados){
+            if (verificarSoldado.getId().equals(id)){
+                flag = true;
+            }
+
+        }if (flag){
+            String nombreCompleto = JOptionPane.showInputDialog(null, "Ingrese el nombre completo del soldado");
+            RangoMilitar rango = obtenerRangoMilitar();
+            AreaEspecializacion funcion = obtenerAreaEspecializacion();
+            int edad = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese el edad del soldado"));
+            boolean enMision = false;
+
+            Soldado newSoldado = new Soldado(id, nombreCompleto, rango, funcion, edad, enMision);
+            soldados.add(newSoldado);
+        }
+    }
+
+    public void agregarSoldado(Soldado soldado){
+        //hazlo sin pedir los datos dentro
+    }
+
+    // TRABAJO EN CLASE
+//    Asignar soldado a una misión
+//    Agrega un soldado a la lista de personal de una misión si está disponible. Cambia su estado a no disponible.
+//    Liberar soldados al finalizar una misión
+//    Recorre todos los soldados de una misión y márcalos como disponibles una vez que la misión haya terminado.
+//    Buscar soldados por especialidad
+//    Retorna una lista con todos los soldados que tienen una especialidad específica (por ejemplo, "Médico" o "Comunicaciones").
+//    Obtener soldados disponibles por rango
+//    Dado un rango (por ejemplo, “Cabo”), retorna todos los soldados disponibles que tengan ese rango.
+//    Calcular edad promedio del personal
+//    Calcula y retorna la edad promedio de los soldados registrados en el batallón.
+//    Buscar soldado por ID
+//    Implementa un metodo para obtener un soldado específico dado su ID único.
+
+
+
+    //Carlos
+    public Soldado asignarSoldadoMision(){
+        //Agrega un soldado a la lista de personal de una misión si está disponible. Cambia su estado a no disponible.
+        Soldado soldadoAsignar = null;
+        for (Soldado soldadoDisponible : soldados){
+            if(!soldadoDisponible.isEstaEnMision()){
+                soldadoAsignar = soldadoDisponible;
+            }
+        }
+        return soldadoAsignar;
+    }
 
 
 
 
+
+    //----------------- Tomas
+
+
+    //  3. Buscar soldados por especialidad
+    //  Retorna una lista con todos los soldados que tienen una especialidad específica (por ejemplo, "Médico" o "Comunicaciones").
+    public LinkedList<Soldado> buscarSoldadosEspecializados(){
+        LinkedList<Soldado> soldadosEspecializados = new LinkedList<>();
+        AreaEspecializacion especializacion = obtenerAreaEspecializacion();
+        for (Soldado soldado : soldados) {
+            if (soldado.getAreaEspecializacion().equals(especializacion)){
+                soldadosEspecializados.add(soldado);
+            }
+        }
+        return soldadosEspecializados;
+    }
+
+   // 4. Obtener soldados disponibles por rango
+   // Dado un rango (por ejemplo, “Cabo”), retorna todos los soldados disponibles que tengan ese rango.
+   public LinkedList<Soldado> buscarSoldadosDisponibles() {
+       LinkedList<Soldado> soldadosDisponibles = new LinkedList<>();
+       RangoMilitar rangoMilitar = obtenerRangoMilitar();
+       for (Soldado soldado : soldados) {
+           if (soldado.getRangoMilitar().equals(rangoMilitar) && !soldado.isEstaEnMision()){
+               soldadosDisponibles.add(soldado);
+           }
+       }
+       return soldadosDisponibles;
+   }
+
+
+
+    //Juan
+
+    //calcular edad promedio de edad
+    public double calcularEdadPromedio(){
+        int edadTotal = 0;
+        for (Soldado soldado : soldados) {
+            edadTotal += soldado.getEdad();
+        }
+        return (double) edadTotal / soldados.size();
+    }
+    //buscar soldado por id
+    public Soldado buscarSoldado(String idSoldado) {
+        for (Soldado soldado : soldados) {
+            if (idSoldado.equals(soldado.getId())){
+                return soldado;
+            }
+        }
+        return null;
+    }
 }
