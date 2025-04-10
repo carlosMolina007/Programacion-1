@@ -2,8 +2,8 @@ package co.edu.uniquindio;
 
 public class VehiculoBlindado extends Vehiculo {
 private int nivelBlindaje;
-    public VehiculoBlindado(String id, String modelo, int fechaFabricacion, double kilometraje, int misionesCompletadas, EstadoOperativo estado, tipoFuncion tipoFuncion) {
-        super(id, modelo, fechaFabricacion, kilometraje, misionesCompletadas, estado,tipoFuncion);
+    public VehiculoBlindado(String id, String modelo, int fechaFabricacion, double kilometraje, int misionesCompletadas, EstadoOperativo estado, int nivelBlindaje) {
+        super(id, modelo, fechaFabricacion, kilometraje, misionesCompletadas, estado);
     this.nivelBlindaje = nivelBlindaje;
     }
 

@@ -2,8 +2,8 @@ package co.edu.uniquindio;
 
 public class TransporteTropas extends Vehiculo {
 private int capacidadSoldados;
-    public TransporteTropas(String id, String modelo, int fechaFabricacion, double kilometraje, int misionesCompletadas, EstadoOperativo estado, tipoFuncion tipoFuncion) {
-        super(id, modelo, fechaFabricacion, kilometraje, misionesCompletadas, estado, tipoFuncion);
+    public TransporteTropas(String id, String modelo, int fechaFabricacion, double kilometraje, int misionesCompletadas, EstadoOperativo estado, int capacidadSoldados) {
+        super(id, modelo, fechaFabricacion, kilometraje, misionesCompletadas, estado);
         this.capacidadSoldados = 0;
     }
 

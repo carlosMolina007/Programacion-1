@@ -10,17 +10,15 @@ public abstract class Vehiculo {
     protected double kilometraje;
     protected static int misionesCompletadas;
     protected EstadoOperativo estadoOperativo;
-    protected tipoFuncion tipoFuncion;
     protected LinkedList<Mision> listMisiones;
 
-    public Vehiculo(String id, String modelo, int fechaFabricacion, double kilometraje, int misionesCompletadas, EstadoOperativo estadoOperativo, tipoFuncion tipoFuncion) {
+    public Vehiculo(String id, String modelo, int fechaFabricacion, double kilometraje, int misionesCompletadas, EstadoOperativo estadoOperativo) {
         this.id = id;
         this.modelo = modelo;
         this.fechaFabricacion = fechaFabricacion;
         this.kilometraje = kilometraje;
-        this.misionesCompletadas = 0;
+        this.misionesCompletadas = misionesCompletadas;
         this.estadoOperativo = estadoOperativo;
-        this.tipoFuncion = tipoFuncion;
         this.listMisiones = new LinkedList<>();
     }
 
@@ -65,6 +63,13 @@ public abstract class Vehiculo {
 
     public void setMisionesCompletadas(int misionesCompletadas) {
         this.misionesCompletadas = misionesCompletadas;
+    }
+
+    public EstadoOperativo getEstadoOperativo() {
+        return estadoOperativo;
+    }
+    public void setEstadoOperativo(EstadoOperativo estadoOperativo) {
+        this.estadoOperativo = estadoOperativo;
     }
 
 

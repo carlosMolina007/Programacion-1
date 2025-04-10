@@ -19,6 +19,217 @@ public class Batallon {
         this.id = id;
     }
 
+    //Unifica la lista de todos los vehiculos (esto para verificaciones y demás)
+    public LinkedList<Vehiculo> unificarVehiculos() {
+
+        LinkedList<Vehiculo> listVehiculosUnificada = new LinkedList<>();
+        listVehiculosUnificada.addAll(listVehiculosBlindados);
+        listVehiculosUnificada.addAll(listTransporteTropas);
+        listVehiculosUnificada.addAll(listVehiculosApoyo);
+
+        return listVehiculosUnificada;
+    }
+
+    //Retorna el tipo de función del vehiculo de apoyo
+    public TipoFuncion tipoFuncion() {
+        TipoFuncion funcion = null;
+        while (funcion == null) {
+            int optionTipoFuncion = Integer.parseInt(JOptionPane.showInputDialog(null,
+                    "Ingrese el número del tipo de función del vehiculo de apoyo:\n1.Logística\n2.Comunicaciones\n3.Médico"));
+            switch (optionTipoFuncion) {
+                case 1 -> funcion = TipoFuncion.LOGISTICA;
+                case 2 -> funcion = TipoFuncion.COMUNICACIONES;
+                case 3 -> funcion = TipoFuncion.MEDICO;
+                default -> JOptionPane.showMessageDialog(null, "Opción no válida, intente nuevamente");
+            }
+        }
+        return funcion;
+    }
+
+    //Crea un vehiculo base con las características que todos tienen en común (Esto para que sea más ordenado)
+    public Object[] vehiculoBase(){
+        String modelo = JOptionPane.showInputDialog(null, "Ingrese el modelo del vehiculo");
+        int anioFabricacion = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese el año de fabricación del vehiculo"));
+        double kilometraje = Double.parseDouble(JOptionPane.showInputDialog(null, " Ingrese el kilometraje del vehiculo"));
+
+        return new Object[]{modelo, anioFabricacion, kilometraje};
+    }
+
+    //Retorna el estado Operativo de un vehiculo desde un enum
+    public EstadoOperativo estadoOperativo() {
+        EstadoOperativo estado = null;
+        while (estado == null) {
+            int optionEstadoOperativo = Integer.parseInt(JOptionPane.showInputDialog(null,
+                    "Ingrese el número del estado operativo del vehiculo:\n\n1.Disponible\n2.Misión\n3.Mantenimiento"));
+            switch (optionEstadoOperativo) {
+                case 1 -> estado = EstadoOperativo.DISPONIBLE;
+                case 2 -> estado = EstadoOperativo.MISION;
+                case 3 -> estado = EstadoOperativo.MANTENIMIENTO;
+                default -> JOptionPane.showMessageDialog(null, "Opción no válida, intente nuevamente");
+            }
+        }
+        return estado;
+    }
+
+    //Verifica el ID de un vehiculo y returna true/false para saber si agregarlo o no
+    public boolean verificarIDVehiculo(String id) {
+        LinkedList<Vehiculo> listVehiculos = unificarVehiculos();
+        for (Vehiculo vehiculo : listVehiculos) {
+            if (vehiculo.getId().equals(id)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+//CRUD (Create, Read, Update, Delete)
+    //Agrega un vehiculo a su lista independiente
+    public boolean agregarVehiculo(Vehiculo vehiculo) {
+        boolean flag = false;
+        String idVehiculo = JOptionPane.showInputDialog(null, "Ingrese el id del vehiculo a agregar");
+        Object[] datosBase = vehiculoBase();
+        while (!flag) {
+            boolean vehiculoExiste = verificarIDVehiculo(idVehiculo);
+            int options = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese el número de la opción del vehiculo a agregar: \n1.Vehiculo Blindado \n2.Vehiculo Apoyo \n3.Vehiculo Transporte de tropas"));
+            if (options == 1) {
+                if (vehiculoExiste) {
+                    String modelo = (String) datosBase[0];
+                    int anioFabricacion = (int) datosBase[1];
+                    double kilometraje = (double) datosBase[2];
+                    EstadoOperativo estadoOperativo = estadoOperativo();
+                    int nivelBlindaje = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese el nivel de blindaje"));
+
+                    VehiculoBlindado newVehiculoBlindado = new VehiculoBlindado(idVehiculo, modelo, anioFabricacion,
+                            kilometraje, 0, estadoOperativo, nivelBlindaje);
+                    listVehiculosBlindados.add(newVehiculoBlindado);
+                    flag = true;
+                    break;
+                }else{
+                    break;
+                }
+            } else if (options == 2) {
+                if (vehiculoExiste) {
+                    String modelo = (String) datosBase[0];
+                    int anioFabricacion = (int) datosBase[1];
+                    double kilometraje = (double) datosBase[2];
+                    EstadoOperativo estadoOperativo = estadoOperativo();
+                    TipoFuncion funcionApoyo = tipoFuncion();
+
+                    VehiculoApoyo newVehiculoApoyo = new VehiculoApoyo(idVehiculo, modelo, anioFabricacion, kilometraje, 0, estadoOperativo, funcionApoyo);
+                    listVehiculosApoyo.add(newVehiculoApoyo);
+                    flag = true;
+                    break;
+                }else{
+                    break;
+                }
+            } else if (options == 3) {
+                if (vehiculoExiste) {
+                    String modelo = (String) datosBase[0];
+                    int anioFabricacion = (int) datosBase[1];
+                    double kilometraje = (double) datosBase[2];
+                    EstadoOperativo estadoOperativo = estadoOperativo();
+                    int capacidadSoldados = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese el capacidad de soldados"));
+
+                    TransporteTropas newVehiculoTransporte = new TransporteTropas(idVehiculo, modelo, anioFabricacion, kilometraje, 0, estadoOperativo, capacidadSoldados);
+                    listTransporteTropas.add(newVehiculoTransporte);
+                    flag = true;
+                    break;
+                }else{
+                    break;
+                }
+            }
+            else {
+                JOptionPane.showMessageDialog(null, "Opción inválida, intente nuevamente");
+            }
+        }
+        return flag;
+    }
+
+    //Retorna una lista que permite visualizar su contenido (dependiendo cuál quieran ver)
+    public LinkedList<Vehiculo> obtenerVehiculos() {
+        boolean flag = false;
+        LinkedList<Vehiculo> listaRetornar = new LinkedList<>();
+        while (!flag) {
+            int option = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese qué lista desea ver:\n1.Vehiculos de apoyo\n2.Vehiculos Blindados\n3.Vehiculos de transporte de tropas"));
+            switch (option) {
+                case 1:
+                    listaRetornar.addAll(listVehiculosApoyo);
+                    flag = true;
+                    break;
+                case 2:
+                    listaRetornar.addAll(listVehiculosBlindados);
+                    flag = true;
+                    break;
+                case 3:
+                    listaRetornar.addAll(listTransporteTropas);
+                    flag = true;
+                    break;
+                default:
+                    JOptionPane.showMessageDialog(null, "Opcion invalida, intente nuevamente");
+            }
+        }
+        return listaRetornar;
+    }
+
+    //Elimina un vehiculo de la lista
+    public boolean eliminarVehiculo(){
+        LinkedList<Vehiculo> listVehiculos = unificarVehiculos();
+        String idVehiculoEliminar = JOptionPane.showInputDialog(null, "Ingrese el id del vehiculo que desea eliminar");
+        boolean vehiculoExiste = verificarIDVehiculo(idVehiculoEliminar);
+        if (!vehiculoExiste) {
+            for (Vehiculo vehiculoEliminar : listVehiculos){
+                if(vehiculoEliminar.getId().equals(idVehiculoEliminar)){
+                    listVehiculos.remove(vehiculoEliminar);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    //Permite editar un vehiculo buscandolo por su ID
+    public boolean editarVehiculo(){
+        String idVehiculoModificar = JOptionPane.showInputDialog(null, "Ingrese el id del vehiculo que desea modificar");
+        for (VehiculoApoyo vehiculoApoyo : listVehiculosApoyo){
+            if(vehiculoApoyo.getId().equals(idVehiculoModificar)){
+                double nuevoKm = Double.parseDouble(JOptionPane.showInputDialog(null, "Ingrese el kilometraje actualizado"));
+                EstadoOperativo NuevoEstadoOperativo = estadoOperativo();
+                TipoFuncion NuevoTipoFuncion = tipoFuncion();
+
+                vehiculoApoyo.setKilometraje(nuevoKm);
+                vehiculoApoyo.setEstadoOperativo(NuevoEstadoOperativo);
+                vehiculoApoyo.setTipoFuncion(NuevoTipoFuncion);
+                return true;
+            }
+        }
+
+        for (VehiculoBlindado vehiculoBlindado : listVehiculosBlindados){
+            if(vehiculoBlindado.getId().equals(idVehiculoModificar)){
+                double nuevoKm = Double.parseDouble(JOptionPane.showInputDialog(null, "Ingrese el kilometraje actualizado"));
+                EstadoOperativo NuevoEstadoOperativo = estadoOperativo();
+                int nuevoBlindaje = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese el blindaje actualizado"));
+
+                vehiculoBlindado.setKilometraje(nuevoKm);
+                vehiculoBlindado.setEstadoOperativo(NuevoEstadoOperativo);
+                vehiculoBlindado.setNivelBlindaje(nuevoBlindaje);
+                return true;
+            }
+        }
+        for (TransporteTropas transporteTropas : listTransporteTropas){
+            if(transporteTropas.getId().equals(idVehiculoModificar)){
+                double nuevoKm = Double.parseDouble(JOptionPane.showInputDialog(null, "Ingrese el kilometraje actualizado"));
+                EstadoOperativo NuevoEstadoOperativo = estadoOperativo();
+                int nuevaCapacidadSoldados = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese el capacidad de soldados"));
+
+                transporteTropas.setKilometraje(nuevoKm);
+                transporteTropas.setEstadoOperativo(NuevoEstadoOperativo);
+                transporteTropas.setCapacidadSoldados(nuevaCapacidadSoldados);
+                return true;
+            }
+        }
+        return false;
+    }
+
     //Se obtiene vehiculos con más de 50 misiones
     public LinkedList<Vehiculo> obtenerVehiculosCantMisiones() {
         LinkedList<Vehiculo> vehiculosMisionesCompletadas = new LinkedList<>();
@@ -46,41 +257,44 @@ public class Batallon {
 
     }
 
-    public boolean registrarMision (LocalDate fechaMision, String ubicacionMision, String idVehiculoMision, LinkedList personal){
+    //Registra una misión y la vincula con un vehiculo
+    public boolean registrarMision(LocalDate fechaMision, String ubicacionMision, String idVehiculoMision, LinkedList personal) {
         Boolean flag = false;
-        String cantMisionesActuales = String.valueOf(vehiculos.size()+1);
-        Mision newMision = new Mision(cantMisionesActuales,fechaMision,ubicacionMision);
+        String cantMisionesActuales = String.valueOf(vehiculos.size() + 1);
+        Mision newMision = new Mision(cantMisionesActuales, fechaMision, ubicacionMision);
         newMision.setPersonal(personal);
-        for (Vehiculo vehiculoBlindado : listVehiculosBlindados ) {
-            if(vehiculoBlindado.getId().equals(idVehiculoMision)){
-                vehiculoBlindado.setMisionesCompletadas(vehiculoBlindado.getMisionesCompletadas()+1);
+        for (Vehiculo vehiculoBlindado : listVehiculosBlindados) {
+            if (vehiculoBlindado.getId().equals(idVehiculoMision)) {
+                vehiculoBlindado.setMisionesCompletadas(vehiculoBlindado.getMisionesCompletadas() + 1);
                 newMision.setVehiculo(vehiculoBlindado);
                 flag = true;
                 break;
             }
-        }for (Vehiculo vehiculoTropas : listTransporteTropas ) {
-                if(vehiculoTropas.getId().equals(idVehiculoMision)){
-                    vehiculoTropas.setMisionesCompletadas(vehiculoTropas.getMisionesCompletadas()+1);
-                    newMision.setVehiculo(vehiculoTropas);
-                    flag = true;
-                    break;
-                }
+        }
+        for (Vehiculo vehiculoTropas : listTransporteTropas) {
+            if (vehiculoTropas.getId().equals(idVehiculoMision)) {
+                vehiculoTropas.setMisionesCompletadas(vehiculoTropas.getMisionesCompletadas() + 1);
+                newMision.setVehiculo(vehiculoTropas);
+                flag = true;
+                break;
             }
-        for (Vehiculo vehiculoApoyo : listVehiculosApoyo ) {
-            if(vehiculoApoyo.getId().equals(idVehiculoMision)){
-                vehiculoApoyo.setMisionesCompletadas(vehiculoApoyo.getMisionesCompletadas()+1);
+        }
+        for (Vehiculo vehiculoApoyo : listVehiculosApoyo) {
+            if (vehiculoApoyo.getId().equals(idVehiculoMision)) {
+                vehiculoApoyo.setMisionesCompletadas(vehiculoApoyo.getMisionesCompletadas() + 1);
                 newMision.setVehiculo(vehiculoApoyo);
                 flag = true;
                 break;
             }
         }
-        if(flag){
+        if (flag) {
             listMisiones.add(newMision);
         }
         return flag;
     }
 
-    public String promedioKilometrajeTipoVehiculo(){
+    //Retorna un mensaje con el Kilometraje promedio de cada tipo de vehiculo
+    public String promedioKilometrajeTipoVehiculo() {
         String mensajePromedio = "";
         int sumaKmApoyo = 0;
         int sumaKmBlindado = 0;
@@ -102,13 +316,14 @@ public class Batallon {
 
         //Realizamos el mensaje para retornarlo
         mensajePromedio = "Kilometraje promedio por cada tipo de vehiculo:\n\n" +
-                "Kilometraje promedio vehiculos de apoyo: "+promedioApoyo+'\n'+
-                "Kilometraje promedio vehiculos blindados: "+promedioBlindado+'\n'+
-                "Kilometraje promedio vehiculos transportadores de tropas: "+promedioTransporteTropas;
+                "Kilometraje promedio vehiculos de apoyo: " + promedioApoyo + '\n' +
+                "Kilometraje promedio vehiculos blindados: " + promedioBlindado + '\n' +
+                "Kilometraje promedio vehiculos transportadores de tropas: " + promedioTransporteTropas;
         return mensajePromedio;
     }
 
-    public LinkedList<Mision> obtenerMisionesUbicacion(String ubicacionMision, LocalDate fechaMisionInicio, LocalDate fechaMisionFin){
+    //Obtiene misiones las cuales su ubicación sea la misma ingresada por un usuario
+    public LinkedList<Mision> obtenerMisionesUbicacion(String ubicacionMision, LocalDate fechaMisionInicio, LocalDate fechaMisionFin) {
         LinkedList<Mision> misionesFiltradas = new LinkedList<>();
         for (Mision mision : listMisiones) {
             if (mision.getUbicacion().equalsIgnoreCase(ubicacionMision)) {
@@ -123,7 +338,8 @@ public class Batallon {
         return misionesFiltradas;
     }
 
-    public Vehiculo vehiculoMayorCantMisiones(){
+    //Retorna el vehiculo con la mayor cantidad de misiones completadas
+    public Vehiculo vehiculoMayorCantMisiones() {
         Vehiculo vehiculoMaxCantMisiones = null;
         int maxCantMisiones = 0;
         for (Vehiculo vehiculoApoyo : listVehiculosApoyo) {
@@ -131,19 +347,59 @@ public class Batallon {
                 maxCantMisiones = vehiculoApoyo.getMisionesCompletadas();
                 vehiculoMaxCantMisiones = vehiculoApoyo;
             }
-        }for (Vehiculo vehiculoBlindado : listVehiculosBlindados) {
+        }
+        for (Vehiculo vehiculoBlindado : listVehiculosBlindados) {
             if (vehiculoBlindado.getMisionesCompletadas() > maxCantMisiones) {
                 maxCantMisiones = vehiculoBlindado.getMisionesCompletadas();
                 vehiculoMaxCantMisiones = vehiculoBlindado;
             }
-        }for (TransporteTropas transporteTropas : listTransporteTropas) {
-            if(transporteTropas.getMisionesCompletadas() > maxCantMisiones){
+        }
+        for (TransporteTropas transporteTropas : listTransporteTropas) {
+            if (transporteTropas.getMisionesCompletadas() > maxCantMisiones) {
                 maxCantMisiones = transporteTropas.getMisionesCompletadas();
                 vehiculoMaxCantMisiones = transporteTropas;
             }
         }
         return vehiculoMaxCantMisiones;
     }
+
+    //Retorna una lista de vehiculos fabricados en un año determinado ordenados por tipo y modelo
+    public LinkedList<Vehiculo> obtenerVehiculosFabricadosXAnio(){
+        LinkedList<Vehiculo> vehiculosUnificados = unificarVehiculos();
+        LinkedList<Vehiculo> vehiculosFiltrados = new LinkedList<>();
+        int fechaFabricacionBuscar = Integer.parseInt(JOptionPane.showInputDialog(null,
+                "Ingrese el año a buscar del vehiculo:"));
+        //Filtra los vehiculos que buscan en un año determinado
+        for (Vehiculo vehiculo : vehiculosUnificados) {
+            if(vehiculo.getFechaFabricacion() == fechaFabricacionBuscar){
+                vehiculosFiltrados.add(vehiculo);
+            }
+        }
+        //Sortea los vehiculos por su tipo de vehiculo y luego por su modelo
+        vehiculosFiltrados.sort((vehiculo1, vehiculo2)->{
+           int comparacionTipoVehiculo = vehiculo1.getClass().getSimpleName().compareTo(vehiculo2.getClass().getSimpleName());
+            if (comparacionTipoVehiculo == 0) {
+                return vehiculo1.getModelo().compareToIgnoreCase(vehiculo2.getModelo());
+            }
+            return comparacionTipoVehiculo;
+        });
+
+        return vehiculosFiltrados;
+    }
+
+    //Ordenar vehiculos por misiones completadas descendentemente
+    public LinkedList<Vehiculo> vehiculosMisionesCompletadasDescendente(){
+        LinkedList<Vehiculo> vehiculosUnificados = unificarVehiculos();
+
+        vehiculosUnificados.sort((vehiculo1, vehiculo2) ->
+                Integer.compare(vehiculo2.getMisionesCompletadas(), vehiculo1.getMisionesCompletadas()));
+
+        return vehiculosUnificados;
+    }
+
+    //
+
+
 
 
 }

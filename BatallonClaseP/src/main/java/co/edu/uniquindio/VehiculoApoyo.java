@@ -1,17 +1,17 @@
 package co.edu.uniquindio;
 
 public class VehiculoApoyo extends Vehiculo {
-public tipoFuncion tipoFuncion;
-    public VehiculoApoyo(String id, String modelo, int fechaFabricacion, double kilometraje, int misionesCompletadas, EstadoOperativo estado, tipoFuncion tipoFuncion) {
-        super(id, modelo, fechaFabricacion, kilometraje, misionesCompletadas, estado, tipoFuncion);
+public TipoFuncion tipoFuncion;
+    public VehiculoApoyo(String id, String modelo, int fechaFabricacion, double kilometraje, int misionesCompletadas, EstadoOperativo estado, TipoFuncion tipoFuncion) {
+        super(id, modelo, fechaFabricacion, kilometraje, misionesCompletadas, estado);
         this.tipoFuncion = tipoFuncion;
     }
 
-    public tipoFuncion getTipoFuncion() {
+    public TipoFuncion getTipoFuncion() {
         return tipoFuncion;
     }
 
-    public void setTipoFuncion(tipoFuncion tipoFuncion) {
+    public void setTipoFuncion(TipoFuncion tipoFuncion) {
         this.tipoFuncion = tipoFuncion;
     }
 
